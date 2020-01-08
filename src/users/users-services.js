@@ -4,7 +4,9 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 const UsersServices = {
 
   getAllUsers(knex) {
-    return knex.select('*').from('live_alert_users');
+    return knex
+      .from('live_alert_users')
+      .select('*');
   },
 
   insertUser(knex, newUser) {
@@ -62,6 +64,11 @@ const UsersServices = {
       .where({ email })
       .first()
       .then(user => !!user);
+  },
+  getUserWithEmail(db, email) {
+    return db('live_alert_users')
+      .where({ email })
+      .first();
   },
 };
 

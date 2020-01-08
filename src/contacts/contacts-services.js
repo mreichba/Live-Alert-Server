@@ -1,11 +1,17 @@
 const ContactsServices = {
 
   getAllContacts(knex, user_id) {
-    return knex.select('*').from('live_alert_contacts')
-      .where('user_id', user_id);
+    return knex('live_alert_contacts')
+      .join('live_alert_users', 'live_alert_users.id', '=', 'live_alert_contacts.user_contacts')
+      .select('nick_name', 'email', 'user_contacts')
+      .where('live_alert_contacts.user_id', user_id);
   },
 
-  insertContact(knex, newContact) {
+  insertContact(knex, contact_id, user_id) {
+    const newContact = {
+      user_id,
+      user_contacts: contact_id
+    };
     return knex
       .insert(newContact)
       .into('live_alert_contacts')
@@ -21,14 +27,14 @@ const ContactsServices = {
     return knex
       .from('live_alert_contacts')
       .select('*')
-      // .innerJoin('live_alert_users', 'live_alert_contacts.user_contacts', '=', 'live_alert_users.id')
+      .innerJoin('live_alert_users', 'live_alert_contacts.user_contacts', '=', 'live_alert_users.id')
       .where({ user_id, user_contacts: contact_id })
       .first();
   },
 
   deleteContact(knex, id) {
     return knex('live_alert_contacts')
-      .where({ id })
+      .where('user_contacts', id)
       .delete();
   },
 
@@ -36,7 +42,7 @@ const ContactsServices = {
     return knex('live_alert_contacts')
       .where({ id })
       .update(newContactFields);
-  }
+  },
 };
 
 module.exports = ContactsServices;

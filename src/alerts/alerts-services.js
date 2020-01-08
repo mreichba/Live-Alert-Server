@@ -2,13 +2,16 @@
 
 const AlertsServices = {
   getAllMyAlerts(knex, user_id) {
-    return knex.select('*').from('live_alert_alerts')
+    return knex('live_alert_alerts')
+      .select('*')
+      // .join('live_alert_users', 'live_alert_alerts.user_id', '=', 'live_alert_users.id')
       .where('user_id', user_id);
   },
 
   getAllMyContactAlerts(knex, user_id) {
     return knex('live_alert_contacts')
       .join('live_alert_alerts', 'live_alert_contacts.user_contacts', '=', 'live_alert_alerts.user_id')
+      .join('live_alert_users', 'live_alert_contacts.user_contacts', '=', 'live_alert_users.id')
       .where('live_alert_contacts.user_id', user_id);
   },
 

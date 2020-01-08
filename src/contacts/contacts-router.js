@@ -2,6 +2,8 @@ const path = require('path');
 const express = require('express');
 const xss = require('xss');
 const ContactsServices = require('./contacts-services');
+const UsersServices = require('../users/users-services');
+
 const jwt = require('../middleware/jwt-auth');
 
 const contactsRouter = express.Router();
@@ -9,9 +11,38 @@ const jsonParser = express.json();
 
 const serializeContact = contact => ({
   id: contact.id,
-  user_id: contact.user_id,
-  user_contacts: contact.user_contacts,
+  user_id: xss(contact.user_id),
+  user_contacts: xss(contact.user_contacts),
 });
+
+function checkContact(req, res, next) {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({
+      error: { message: `ERROR: Missing email in request body` }
+    });
+  }
+  UsersServices.getUserWithEmail(req.app.get('db'), email)
+    .then(user => {
+      if (!user) {
+        return res.status(400).json({
+          error: { message: `ERROR: User does not exist` }
+        });
+      }
+      ContactsServices.getById(req.app.get('db'), user.id, req.user.id)
+        .then(contact => {
+          if (contact) {
+            return res.status(400).json({
+              error: { message: `ERROR: Contact already exists` }
+            });
+          }
+          req.contact = user;
+          next();
+        });
+
+    });
+}
 
 contactsRouter
   .route('/')
@@ -19,30 +50,23 @@ contactsRouter
   .get((req, res, next) => {
     ContactsServices.getAllContacts(req.app.get('db'), req.user.id) //equals knexInstance
       .then(contacts => {
-        res.json(contacts.map(serializeContact));
+        res.json(contacts);
       })
       .catch(next);
   })
 
-  .post(jsonParser, (req, res, next) => {
-    const { user_id, user_contacts } = req.body;
-    const newContact = { user_id, user_contacts };
-    for (const [key, value] of Object.entries(newContact)) {
-      if (value == null) {
-        return res.status(400).json({
-          error: { message: `Missing '${key}' in request body` }
-        });
-      }
-    }
+  .post(jsonParser, checkContact, (req, res, next) => {
+    const user_id = req.user.id;
+    const contact_id = req.contact.id;
+
     ContactsServices.insertContact(
       req.app.get('db'),
-      newContact
+      contact_id,
+      user_id
     )
-
       .then(contact => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl + `/${contact.id}`))
           .json(serializeContact(contact));
       })
       .catch(next);

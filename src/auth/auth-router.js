@@ -1,6 +1,7 @@
 const express = require('express');
 const AuthServices = require('./auth-services');
 const UsersServices = require('../users/users-services');
+const xss = require('xss');
 const path = require('path');
 
 
@@ -9,10 +10,10 @@ const jsonParser = express.json();
 
 const serializeUser = user => ({
   id: user.id,
-  nick_name: user.nick_name,
-  email: user.email,
-  password: user.password,
-  safeword: user.safeword,
+  nick_name: xss(user.nick_name),
+  email: xss(user.email),
+  password: xss(user.password),
+  safeword: xss(user.safeword),
 });
 
 authRouter

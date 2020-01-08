@@ -9,7 +9,7 @@ const jsonParser = express.json();
 
 const serializeAlert = alert => ({
   id: alert.id,
-  user_id: alert.user_id,
+  nick_name: xss(alert.nick_name),
   alert_time: alert.alert_time,
   longitude: alert.longitude,
   latitude: alert.latitude,
@@ -20,7 +20,7 @@ alertsRouter
   .route('/contact-alerts')
   .all(jwt)
   .get((req, res, next) => {
-    AlertsService.getAllMyContactAlerts(req.app.get('db'), req.user.id) //equals knexInstance
+    AlertsService.getAllMyContactAlerts(req.app.get('db'), req.user.id)
       .then(alerts => {
         res.json(alerts.map(serializeAlert));
       })
@@ -31,7 +31,7 @@ alertsRouter
   .route('/')
   .all(jwt)
   .get((req, res, next) => {
-    AlertsService.getAllMyAlerts(req.app.get('db'), req.user.id) //equals knexInstance
+    AlertsService.getAllMyAlerts(req.app.get('db'), req.user.id)
       .then(alerts => {
         res.json(alerts.map(serializeAlert));
       })
@@ -73,7 +73,7 @@ alertsRouter
       .then(alert => {
         if (!alert) {
           return res.status(404).json({
-            error: { message: `Alert doesn't exist` }
+            error: { message: `ERROR: Alert doesn't exist` }
           });
         }
         res.alert = alert;

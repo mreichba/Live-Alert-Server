@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const xss = require('xss');
 const UsersServices = require('./users-services');
+const bcrypt = require('bcryptjs');
 
 const usersRouter = express.Router();
 const jsonParser = express.json();
@@ -16,6 +17,15 @@ const serializeUser = user => ({
 });
 
 usersRouter
+  .route('/home')
+  .all(jwt)
+  .get((req, res) => {
+    console.log(req.user)
+    return res.json(
+      { nick_name: req.user.nick_name }
+    );
+  });
+usersRouter
   .route('/')
   .all(jwt)
   .get((req, res, next) => {
@@ -25,16 +35,29 @@ usersRouter
       })
       .catch(next);
   })
-  .delete((req, res, next) => {
+  .delete(jsonParser, (req, res, next) => {
     console.log(req.user.id);
-    UsersServices.deleteUser(
-      req.app.get('db'),
-      req.user.id
-    )
-      .then(() => {
-        res.status(204).end();
-      })
-      .catch(next);
+    const userId = req.user.id;
+    const password = req.body.password;
+    const email = req.body.email;
+    UsersServices.getById(req.app.get('db'), userId)
+      .then(user => {
+        if (user.email === email && bcrypt.compareSync(password, user.password)) {
+          UsersServices.deleteUser(
+            req.app.get('db'),
+            req.user.id
+          )
+            .then(() => {
+              res.status(204).end();
+            })
+            .catch(next);
+        } else {
+          res.status(401)
+            .end();
+        }
+      });
+
+
   });
 
 usersRouter

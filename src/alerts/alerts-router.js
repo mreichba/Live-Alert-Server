@@ -14,6 +14,7 @@ const serializeAlert = alert => ({
   longitude: alert.longitude,
   latitude: alert.latitude,
   alert_active: alert.alert_active,
+  safeword: alert.safeword
 });
 
 alertsRouter

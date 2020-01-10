@@ -22,8 +22,6 @@ const ContactsServices = {
   },
 
   getById(knex, contact_id, user_id) {
-    console.log(contact_id);
-    console.log(user_id);
     return knex
       .from('live_alert_contacts')
       .select('*')

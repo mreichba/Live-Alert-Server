@@ -53,7 +53,6 @@ alertsRouter
       req.app.get('db'),
       newAlert
     )
-
       .then(alert => {
         res
           .status(201)
@@ -65,7 +64,7 @@ alertsRouter
 
 alertsRouter
   .route('/:alert_id')
-
+  .all(jwt)
   .all((req, res, next) => {
     AlertsService.getById(
       req.app.get('db'),
@@ -74,7 +73,7 @@ alertsRouter
       .then(alert => {
         if (!alert) {
           return res.status(404).json({
-            error: { message: `ERROR: Alert doesn't exist` }
+            error: { message: 'ERROR: Alert doesn\'t exist' }
           });
         }
         res.alert = alert;
@@ -86,17 +85,17 @@ alertsRouter
   .get((req, res, next) => {
     res.json(serializeAlert(res.alert));
   })
-
-  .delete((req, res, next) => {
-    AlertsService.deleteAlert(
-      req.app.get('db'),
-      req.params.alert_id
-    )
-      .then(() => {
-        res.status(204).end();
-      })
-      .catch(next);
-  })
+  //****FOR WHEN ADMIN PAGE IS ADDED********* */
+  // .delete((req, res, next) => {
+  //   AlertsService.deleteAlert(
+  //     req.app.get('db'),
+  //     req.params.alert_id
+  //   )
+  //     .then(() => {
+  //       res.status(204).end();
+  //     })
+  //     .catch(next);
+  // })
 
   .patch(jsonParser, (req, res, next) => {
     const { alert_active } = req.body;
@@ -105,7 +104,7 @@ alertsRouter
     if (numberOfValues === 0) {
       return res.status(400).json({
         error: {
-          message: `Request body must contain 'alert_active'`
+          message: 'Request body must contain \'alert_active\''
         }
       });
     }

@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const xss = require('xss');
 const ContactsServices = require('./contacts-services');
@@ -20,21 +19,21 @@ function checkContact(req, res, next) {
 
   if (!email) {
     return res.status(400).json({
-      error: { message: `ERROR: Missing email in request body` }
+      error: { message: 'ERROR: Missing email in request body' }
     });
   }
   UsersServices.getUserWithEmail(req.app.get('db'), email)
     .then(user => {
       if (!user) {
         return res.status(400).json({
-          error: { message: `ERROR: User does not exist` }
+          error: { message: 'ERROR: User does not exist' }
         });
       }
       ContactsServices.getById(req.app.get('db'), user.id, req.user.id)
         .then(contact => {
           if (contact) {
             return res.status(400).json({
-              error: { message: `ERROR: Contact already exists` }
+              error: { message: 'ERROR: Contact already exists' }
             });
           }
           req.contact = user;
@@ -48,7 +47,7 @@ contactsRouter
   .route('/')
   .all(jwt)
   .get((req, res, next) => {
-    ContactsServices.getAllContacts(req.app.get('db'), req.user.id) //equals knexInstance
+    ContactsServices.getAllContacts(req.app.get('db'), req.user.id)
       .then(contacts => {
         res.json(contacts);
       })
@@ -71,41 +70,41 @@ contactsRouter
       })
       .catch(next);
   });
+//*******FOR WHEN ADMIN PAGE IS ADDED */
+// contactsRouter
+//   .route('/:contact_id')
+//   .all(jwt)
+//   .all((req, res, next) => {
+//     ContactsServices.getById(
+//       req.app.get('db'),
+//       req.params.contact_id,
+//       req.user.id
+//     )
+//       .then(contact => {
+//         if (!contact) {
+//           return res.status(404).json({
+//             error: { message: `Contact doesn't exist` }
+//           });
+//         }
+//         res.contact = contact;
+//         next();
+//       })
+//       .catch(next);
+//   })
 
-contactsRouter
-  .route('/:contact_id')
-  .all(jwt)
-  .all((req, res, next) => {
-    ContactsServices.getById(
-      req.app.get('db'),
-      req.params.contact_id,
-      req.user.id
-    )
-      .then(contact => {
-        if (!contact) {
-          return res.status(404).json({
-            error: { message: `Contact doesn't exist` }
-          });
-        }
-        res.contact = contact;
-        next();
-      })
-      .catch(next);
-  })
+//   .get((req, res, next) => {
+//     res.json(serializeContact(res.contact));
+//   })
 
-  .get((req, res, next) => {
-    res.json(serializeContact(res.contact));
-  })
-
-  .delete((req, res, next) => {
-    ContactsServices.deleteContact(
-      req.app.get('db'),
-      req.params.contact_id
-    )
-      .then(() => {
-        res.status(204).end();
-      })
-      .catch(next);
-  });
+//   .delete((req, res, next) => {
+//     ContactsServices.deleteContact(
+//       req.app.get('db'),
+//       req.params.contact_id
+//     )
+//       .then(() => {
+//         res.status(204).end();
+//       })
+//       .catch(next);
+//   });
 
 module.exports = contactsRouter;

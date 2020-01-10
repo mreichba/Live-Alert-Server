@@ -12,7 +12,7 @@ const serializeUser = user => ({
   id: user.id,
   nick_name: xss(user.nick_name),
   email: xss(user.email),
-  password: xss(user.password),
+  // password: xss(user.password),
   safeword: xss(user.safeword),
 });
 
@@ -20,7 +20,6 @@ authRouter
   .post('/sign-up', jsonParser, (req, res, next) => {
     const { nick_name, email, password, safeword } = req.body;
     const newUser = { nick_name, email, password, safeword };
-    console.log(newUser);
 
     for (const [key, value] of Object.entries(newUser)) {
       if (value == null) {
@@ -94,7 +93,7 @@ authRouter
               });
 
             const sub = dbUser.email;
-            const payload = { user_id: dbUser.id }; //might have to change user_id
+            const payload = { user_id: dbUser.id };
             res.send({
               authToken: AuthServices.createJwt(sub, payload),
               user_id: dbUser.id

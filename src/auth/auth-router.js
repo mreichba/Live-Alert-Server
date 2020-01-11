@@ -26,11 +26,11 @@ authRouter
         });
       }
     }
-    // //validates password
-    // const passwordError = UsersServices.validatePassword(password);
+    //validates password
+    const passwordError = UsersServices.validatePassword(password);
 
-    // if (passwordError)
-    //   return res.status(400).json({ error: passwordError });
+    if (passwordError)
+      return res.status(400).json({ error: passwordError });
 
     UsersServices.hasUserWithEmail(
       req.app.get('db'),

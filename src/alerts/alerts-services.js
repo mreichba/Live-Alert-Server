@@ -4,10 +4,9 @@ const AlertsServices = {
   getAllMyAlerts(knex, user_id) {
     return knex('live_alert_alerts')
       .select('*')
-      // .join('live_alert_users', 'live_alert_alerts.user_id', '=', 'live_alert_users.id')
       .where('user_id', user_id);
   },
-
+  //joins all 3 tables so that we can provide the users contacts info utilizing user_id
   getAllMyContactAlerts(knex, user_id) {
     return knex('live_alert_contacts')
       .join('live_alert_alerts', 'live_alert_contacts.user_contacts', '=', 'live_alert_alerts.user_id')

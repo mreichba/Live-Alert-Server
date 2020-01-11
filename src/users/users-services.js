@@ -38,7 +38,7 @@ const UsersServices = {
       .where({ id })
       .update(newUserFields);
   },
-
+  //used to validate create account password
   validatePassword(password) {
     if (password.length < 8) {
       return 'Password be longer than 8 characters';

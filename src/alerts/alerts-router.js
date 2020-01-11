@@ -3,10 +3,9 @@ const express = require('express');
 const xss = require('xss');
 const AlertsService = require('./alerts-services');
 const jwt = require('../middleware/jwt-auth');
-
 const alertsRouter = express.Router();
 const jsonParser = express.json();
-
+//tidy serialize function that also prevents xss attacks
 const serializeAlert = alert => ({
   id: alert.id,
   nick_name: xss(alert.nick_name),
@@ -14,31 +13,33 @@ const serializeAlert = alert => ({
   longitude: alert.longitude,
   latitude: alert.latitude,
   alert_active: alert.alert_active,
-  safeword: alert.safeword
+  safeword: xss(alert.safeword)
 });
-
+//Router for users contact alerts (/api/alerts/contact-alerts)
 alertsRouter
   .route('/contact-alerts')
-  .all(jwt)
+  .all(jwt)//protects all / endpoints with JWT
   .get((req, res, next) => {
+    // gets all the users contact alerts from alerts database
     AlertsService.getAllMyContactAlerts(req.app.get('db'), req.user.id)
       .then(alerts => {
         res.json(alerts.map(serializeAlert));
       })
       .catch(next);
   });
-
+// Router for alerts (/api/alerts)
 alertsRouter
   .route('/')
-  .all(jwt)
+  .all(jwt)//protects all / endpoints with JWT
   .get((req, res, next) => {
+    //gets all the users alerts from alert database
     AlertsService.getAllMyAlerts(req.app.get('db'), req.user.id)
       .then(alerts => {
         res.json(alerts.map(serializeAlert));
       })
       .catch(next);
   })
-
+  //POST's a new alert
   .post(jsonParser, (req, res, next) => {
     const { alert_time, longitude, latitude, alert_active } = req.body;
     const newAlert = { user_id: req.user.id, alert_time, longitude, latitude, alert_active };
@@ -49,6 +50,7 @@ alertsRouter
         });
       }
     }
+    //inserts alert into alert database
     AlertsService.insertAlert(
       req.app.get('db'),
       newAlert
@@ -56,22 +58,22 @@ alertsRouter
       .then(alert => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl + `/${alert.id}`))
           .json(serializeAlert(alert));
       })
       .catch(next);
   });
-
+//Router for dynamic alerts 
 alertsRouter
   .route('/:alert_id')
-  .all(jwt)
+  .all(jwt)//protects all / endpoints with JWT
   .all((req, res, next) => {
+    //gets alert by alert id
     AlertsService.getById(
       req.app.get('db'),
       req.params.alert_id
     )
       .then(alert => {
-        if (!alert) {
+        if (!alert) { //verifies alert
           return res.status(404).json({
             error: { message: 'ERROR: Alert doesn\'t exist' }
           });
@@ -97,6 +99,7 @@ alertsRouter
   //     .catch(next);
   // })
 
+  // only allows change to alert_active portion of alerts for safety purposes
   .patch(jsonParser, (req, res, next) => {
     const { alert_active } = req.body;
     const alertToUpdate = { alert_active };
@@ -108,6 +111,7 @@ alertsRouter
         }
       });
     }
+    //updates alerts database for current user
     AlertsService.updateAlert(
       req.app.get('db'),
       req.params.alert_id,

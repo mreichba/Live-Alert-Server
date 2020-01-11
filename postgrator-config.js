@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+//sets PostgreSQL for migration of tables and equips an SSL header needed for PostgreSQL
 module.exports = {
   'migrationsDirectory': 'migrations',
   'driver': 'pg',

@@ -3,11 +3,9 @@ const AuthServices = require('./auth-services');
 const UsersServices = require('../users/users-services');
 const xss = require('xss');
 const path = require('path');
-
-
 const authRouter = express.Router();
 const jsonParser = express.json();
-
+//tidy serialize function that also prevents xss attacks
 const serializeUser = user => ({
   id: user.id,
   nick_name: xss(user.nick_name),
@@ -15,7 +13,7 @@ const serializeUser = user => ({
   // password: xss(user.password),
   safeword: xss(user.safeword),
 });
-
+//Router for sign-up page
 authRouter
   .post('/sign-up', jsonParser, (req, res, next) => {
     const { nick_name, email, password, safeword } = req.body;
@@ -28,6 +26,7 @@ authRouter
         });
       }
     }
+    // //validates password
     // const passwordError = UsersServices.validatePassword(password);
 
     // if (passwordError)
@@ -37,10 +36,10 @@ authRouter
       req.app.get('db'),
       email
     )
-      .then(hasUserWithEmail => {
+      .then(hasUserWithEmail => {//verifies user doesnt already exist
         if (hasUserWithEmail)
           return res.status(400).json({ error: 'Email already taken' });
-
+        //hashs the password
         return UsersServices.hashPassword(password)
           .then(hashedPassword => {
             const newUser = {
@@ -49,6 +48,7 @@ authRouter
               password: hashedPassword,
               safeword,
             };
+            //inserts new user into user database
             UsersServices.insertUser(
               req.app.get('db'),
               newUser
@@ -56,14 +56,13 @@ authRouter
               .then(user => {
                 res
                   .status(201)
-                  .location(path.posix.join(req.originalUrl + `/${user.id}`))
                   .json(serializeUser(user));
               })
               .catch(next);
           });
       });
   });
-
+//Router for login
 authRouter
   .post('/login', jsonParser, (req, res, next) => {
     const { email, password } = req.body;
@@ -74,24 +73,24 @@ authRouter
         return res.status(400).json({
           error: `Missing '${key}' in request body`
         });
-
+    //checks user database for login email
     AuthServices.getUserWithEmail(
       req.app.get('db'),
       loginUser.email
     )
       .then(dbUser => {
-        if (!dbUser)
+        if (!dbUser) //verifies user
           return res.status(400).json({
             error: 'Incorrect email or password',
           });
-
+        //compares login pass with hashed pass
         return AuthServices.comparePasswords(loginUser.password, dbUser.password)
           .then(compareMatch => {
             if (!compareMatch)
               return res.status(400).json({
                 error: 'Incorrect email or password',
               });
-
+            //creates JWT Token
             const sub = dbUser.email;
             const payload = { user_id: dbUser.id };
             res.send({

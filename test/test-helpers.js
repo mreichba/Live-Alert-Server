@@ -96,7 +96,7 @@ function makeTablesFixture() {
 }
 
 function seedTables(db, users, contacts, alerts) {
-  // use a transaction to group the queries and auto rollback on any failure
+  // uses a transaction to group the queries and auto rollback on any failure
   return db.transaction(async trx => {
     await trx.into('live_alert_users').insert(users)
     await trx.into('live_alert_contacts').insert(contacts)
@@ -111,7 +111,7 @@ function seedTables(db, users, contacts, alerts) {
         [contacts[contacts.length - 1].id],
       ),
     ])
-    // only insert comments if there are some, also update the sequence counter
+    // only insert alerts if there are some, also update the sequence counter
     if (alerts.length) {
       await trx.into('live_alert_alerts').insert(alerts)
       await trx.raw(

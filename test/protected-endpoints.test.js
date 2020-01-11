@@ -33,31 +33,11 @@ describe('Protected Enpoints', function () {
   );
 
   const protectedEndpoints = [
-    // {
-    //   name: 'GET /api/users',
-    //   path: '/api/users',
-    //   method: supertest(app).get,
-    // },
     {
       name: 'DELETE /api/users',
       path: '/api/users',
       method: supertest(app).get,
     },
-    // {
-    //   name: 'GET /api/users/:user_id',
-    //   path: '/api/users/1',
-    //   method: supertest(app).get,
-    // },
-    // {
-    //   name: 'DELETE /api/users/:user_id',
-    //   path: '/api/users/1',
-    //   method: supertest(app).get,
-    // },
-    // {
-    //   name: 'PATCH /api/users/:user_id',
-    //   path: '/api/users/1',
-    //   method: supertest(app).get,
-    // },
     {
       name: 'GET /api/users/home',
       path: '/api/users/home',
@@ -68,11 +48,6 @@ describe('Protected Enpoints', function () {
       path: '/api/contacts',
       method: supertest(app).get,
     },
-    // {
-    //   name: 'GET /api/contacts/:contact_id',
-    //   path: '/api/contacts/2',
-    //   method: supertest(app).get,
-    // },
     {
       name: 'GET /api/alerts',
       path: '/api/alerts',
@@ -117,13 +92,6 @@ describe('Protected Enpoints', function () {
           .set('Authorization', helpers.makeAuthHeader(userInvalidCreds))
           .expect(401, { error: 'Unauthorized request' });
       });
-
-      // it.only('responds 401 \'Unauthorized request\' when invalid password', () => {
-      //   const userInvalidPass = { email: testUsers[0].email, password: 'wrong' };
-      //   return endpoint.method(endpoint.path)
-      //     .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
-      //     .expect(401, { error: 'Unauthorized request' });
-      // });
 
       it('responds 200 \'OK\' when valid credentials', () => {
         const userValidCreds = { email: testUsers[0].email, password: testUsers[0].password };

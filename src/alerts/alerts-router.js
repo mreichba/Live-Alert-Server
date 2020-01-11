@@ -87,17 +87,6 @@ alertsRouter
   .get((req, res, next) => {
     res.json(serializeAlert(res.alert));
   })
-  //****FOR WHEN ADMIN PAGE IS ADDED********* */
-  // .delete((req, res, next) => {
-  //   AlertsService.deleteAlert(
-  //     req.app.get('db'),
-  //     req.params.alert_id
-  //   )
-  //     .then(() => {
-  //       res.status(204).end();
-  //     })
-  //     .catch(next);
-  // })
 
   // only allows change to alert_active portion of alerts for safety purposes
   .patch(jsonParser, (req, res, next) => {

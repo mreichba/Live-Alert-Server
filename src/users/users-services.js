@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/;
+//REGEX for validate password - requires one uppercase, one lowercase, one number, and a special character
 
 const UsersServices = {
 

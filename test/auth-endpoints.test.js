@@ -18,6 +18,7 @@ describe('Auth Endpoints', function () {
   });
 
   after('disconnect from db', () => db.destroy());
+  //cleans all 3 tables before and after each testsuite
   before('cleanup', () => db.raw('TRUNCATE live_alert_users, live_alert_alerts, live_alert_contacts RESTART IDENTITY CASCADE'));
   afterEach('cleanup', () => db.raw('TRUNCATE live_alert_users, live_alert_alerts, live_alert_contacts RESTART IDENTITY CASCADE'));
 

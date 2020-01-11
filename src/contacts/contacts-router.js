@@ -72,41 +72,5 @@ contactsRouter
       })
       .catch(next);
   });
-//*******FOR WHEN ADMIN PAGE IS ADDED */
-// contactsRouter
-//   .route('/:contact_id')
-//   .all(jwt)//protects all / endpoints with JWT
-//   .all((req, res, next) => {
-//     ContactsServices.getById(
-//       req.app.get('db'),
-//       req.params.contact_id,
-//       req.user.id
-//     )
-//       .then(contact => {
-//         if (!contact) {
-//           return res.status(404).json({
-//             error: { message: `Contact doesn't exist` }
-//           });
-//         }
-//         res.contact = contact;
-//         next();
-//       })
-//       .catch(next);
-//   })
-
-//   .get((req, res, next) => {
-//     res.json(serializeContact(res.contact));
-//   })
-
-//   .delete((req, res, next) => {
-//     ContactsServices.deleteContact(
-//       req.app.get('db'),
-//       req.params.contact_id
-//     )
-//       .then(() => {
-//         res.status(204).end();
-//       })
-//       .catch(next);
-//   });
 
 module.exports = contactsRouter;

@@ -38,4 +38,5 @@ POST | /alerts | posts user new alert
 GET | /alerts/contact-alerts | gets users contact alerts
 GET | /alerts/:alert_id | gets alert by id
 PATCH | /alerts/:alert_id | patches alert_active from 'Emergency' (true) to 'Safe' (false)
-
+POST | /auth/sign-up | posts a new user info and hashed password to users database
+POST | /auth/login | posts login credentials (email/password) which is then compared to the user credentials in the users database

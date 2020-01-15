@@ -24,6 +24,8 @@ Run deploy to heroku master `npm run deploy`
 
 ## API Documentation
 
+Base URL: http://localhost:8000/api
+
 HTTP Method | Path | Purpose
 --- | --- | ---
 GET | /users | gets all users

@@ -22,3 +22,18 @@ Run production database migrations `npm run migrate:production`
 
 Run deploy to heroku master `npm run deploy`
 
+## API Documentation
+
+HTTP Method | Path | Purpose
+--- | --- | ---
+GET | /users | gets all users
+DELETE | /users | deletes current user
+GET | /users/home | gets and displays user name
+GET | /contacts | gets all user contacts
+POST | /contacts | posts new contact to database
+GET | /alerts | gets users alerts
+POST | /alerts | posts user new alert
+GET | /alerts/contact-alerts | gets users contact alerts
+GET | /alerts/:alert_id | gets alert by id
+PATCH | /alerts/:alert_id | patches alert_active from 'Emergency' (true) to 'Safe' (false)
+

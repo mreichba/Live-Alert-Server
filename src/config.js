@@ -1,4 +1,4 @@
-
+//these config variables will be set in .env or default option if none exist in .env
 module.exports = {
   PORT: process.env.PORT || 8000,
   NODE_ENV: process.env.NODE_ENV || 'development',

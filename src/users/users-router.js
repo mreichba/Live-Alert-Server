@@ -29,13 +29,6 @@ usersRouter
 usersRouter
   .route('/')
   .all(jwt) //protects all / endpoints with JWT
-  .get((req, res, next) => {
-    UsersServices.getAllUsers(req.app.get('db'))
-      .then(users => {
-        res.json(users.map(serializeUser));
-      })
-      .catch(next);
-  })
   //deletes current user account
   .delete(jsonParser, (req, res, next) => {
     const userId = req.user.id;
@@ -46,6 +39,7 @@ usersRouter
       .then(user => {
         //compares current user credentials with account being deleted credentials
         if (user.email === email && bcrypt.compareSync(password, user.password)) {
+          //deletes current user id from user database
           UsersServices.deleteUser(
             req.app.get('db'),
             req.user.id

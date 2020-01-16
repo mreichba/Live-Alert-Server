@@ -1,6 +1,7 @@
-
+//AlertsServices are some base table query functions for the PostgreSQL live_alert_alerts table 
 
 const AlertsServices = {
+  //gets only the users alerts
   getAllMyAlerts(knex, user_id) {
     return knex('live_alert_alerts')
       .select('*')
@@ -8,7 +9,7 @@ const AlertsServices = {
       .orderBy('id', 'desc');
 
   },
-  //joins all 3 tables so that we can provide the users contacts info utilizing user_id
+  //gets only the contacts alerts, joins all 3 tables so that we can provide the users contacts info utilizing user_id, 
   getAllMyContactAlerts(knex, user_id) {
     return knex('live_alert_contacts')
       .join('live_alert_alerts', 'live_alert_contacts.user_contacts', '=', 'live_alert_alerts.user_id')
@@ -40,7 +41,7 @@ const AlertsServices = {
       .where({ id })
       .delete();
   },
-
+  //used to mark someone safe, only changes active_alert field
   updateAlert(knex, id, newAlertFields) {
     return knex('live_alert_alerts')
       .where({ id })

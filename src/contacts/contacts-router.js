@@ -1,7 +1,7 @@
 const express = require('express');
 const xss = require('xss');
 const ContactsServices = require('./contacts-services');
-const UsersServices = require('../users/users-services');
+const AuthService = require('../auth/auth-services');
 const jwt = require('../middleware/jwt-auth');
 const contactsRouter = express.Router();
 const jsonParser = express.json();
@@ -22,22 +22,24 @@ function checkContact(req, res, next) {
     });
   }
   //gets user using email from user database
-  UsersServices.getUserWithEmail(req.app.get('db'), email)
+  AuthService.getUserWithEmail(req.app.get('db'), email)
+    //checks if user exists
     .then(user => {
       if (!user) {
         return res.status(400).json({
           error: { message: 'ERROR: User does not exist' }
         });
       }
-      //gets contacts from contacts database using user id
+      //checks users contacts database using current users id (req.user.id) and user.id from above for existing user contact
       ContactsServices.getById(req.app.get('db'), user.id, req.user.id)
         .then(contact => {
+          //checks if contact already exists
           if (contact) {
             return res.status(400).json({
               error: { message: 'ERROR: Contact already exists' }
             });
           }
-          req.contact = user;
+          req.contact = user; //sets req.contact to user which is used in POST request
           next();
         });
 
@@ -62,8 +64,8 @@ contactsRouter
     //inserts new contact into contacts database
     ContactsServices.insertContact(
       req.app.get('db'),
-      contact_id,
-      user_id
+      contact_id, //user.id of contact
+      user_id//current users id
     )
       .then(contact => {
         res

@@ -41,8 +41,10 @@ alertsRouter
   })
   //POST's a new alert
   .post(jsonParser, (req, res, next) => {
+    //destructures request body variables and sets them to the newAlert
     const { alert_time, longitude, latitude, alert_active } = req.body;
     const newAlert = { user_id: req.user.id, alert_time, longitude, latitude, alert_active };
+    //makes sure no variables are empty
     for (const [key, value] of Object.entries(newAlert)) {
       if (value == null) {
         return res.status(400).json({
@@ -66,28 +68,6 @@ alertsRouter
 alertsRouter
   .route('/:alert_id')
   .all(jwt)//protects all / endpoints with JWT
-  .all((req, res, next) => {
-    //gets alert by alert id
-    AlertsService.getById(
-      req.app.get('db'),
-      req.params.alert_id
-    )
-      .then(alert => {
-        if (!alert) { //verifies alert
-          return res.status(404).json({
-            error: { message: 'ERROR: Alert doesn\'t exist' }
-          });
-        }
-        res.alert = alert;
-        next();
-      })
-      .catch(next);
-  })
-
-  .get((req, res, next) => {
-    res.json(serializeAlert(res.alert));
-  })
-
   // only allows change to alert_active portion of alerts for safety purposes
   .patch(jsonParser, (req, res, next) => {
     const { alert_active } = req.body;

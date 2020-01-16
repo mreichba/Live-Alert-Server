@@ -18,10 +18,10 @@ app.use(morgan(morganOption));
 app.use(helmet());//helps secure http headers
 app.use(cors());//allows cross origin resource sharing
 //enables routers for use
-app.use('/api/auth', authRouter);
-app.use('/api/alerts', alertsRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/contacts', contactsRouter);
+app.use('/api/auth', authRouter);//router and path for login
+app.use('/api/alerts', alertsRouter);//router and path for alerts
+app.use('/api/users', usersRouter);//router and path for users
+app.use('/api/contacts', contactsRouter);//router and path for contacts
 
 app.get('/', (req, res) => {
   res.send('Hello, world!');

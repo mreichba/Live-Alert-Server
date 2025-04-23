@@ -2,6 +2,7 @@ BEGIN;
 
 TRUNCATE live_alert_users, live_alert_alerts, live_alert_contacts RESTART IDENTITY CASCADE;
 
+--Password for all users = Password
 INSERT INTO live_alert_users (email, nick_name, password, safeword)
 VALUES
   ('gz32drift@gmail.com', 'mace', '$2a$12$bLw1pKMVWyu1NHvbpN80/eoMeC63X.oGnR1H4hWr6K4CgWSDk5chu', 'drifter'),

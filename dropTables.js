@@ -7,7 +7,7 @@ const path = require('path');
 const useSSL = process.env.SSL === 'true';
 const connectionString = process.env.NODE_ENV === 'test'
   ? process.env.TEST_DATABASE_URL
-  : process.env.DATABASE_URL || 'postgresql://alert:123@localhost/live-alert';
+  : process.env.DATABASE_URL;
 
 const client = new Client({
   connectionString,

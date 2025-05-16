@@ -9,6 +9,12 @@ const db = knex({
 
 app.set('db', db);
 //server listens on directed port
+
+//health check
+app.get('/health', (req, res) => {
+  res.send('API is live!');
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
 });

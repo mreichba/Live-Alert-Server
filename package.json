@@ -6,35 +6,37 @@
   "scripts": {
     "test": "mocha --require test/setup.js",
     "dev": "nodemon src/server.js",
-    "migrate": "node runMigrations.js",
+    "migrate": "postgrator --config postgrator-config.js",
+    "migrate:down": "postgrator --config postgrator-config.js --to 0",
     "migrate:test": "env NODE_ENV=test npm run migrate",
     "migrate:production": "node runMigrations.js",
+    "drop:tables": "node dropTables.js",
     "start": "node src/server.js",
-    "seed": "node seed.js",
-    "predeploy": "npm audit && npm run migrate:production",
-    "deploy": "git push heroku main"
+    "seed": "node seed.js"
   },
   "keywords": [],
+  "engines": {
+    "node": "18.x"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "helmet": "^3.21.2",
-    "jsonwebtoken": "^8.5.1",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "helmet": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
     "knex": "^2.5.1",
-    "morgan": "^1.9.1",
-    "pg": "^8.15.1",
-    "xss": "^1.0.6"
+    "morgan": "^1.10.0",
+    "pg": "^8.15.5",
+    "xss": "^1.0.6",
+    "postgrator-cli": "^3.3.0"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.2.2",
-    "nodemon": "^2.0.1",
-    "postgrator": "^5.0.0",
-    "postgrator-cli": "^5.0.0",
-    "supertest": "^4.0.2"
+    "chai": "^4.5.0",
+    "mocha": "^10.8.2",
+    "nodemon": "^3.1.10",
+    "supertest": "^6.3.4"
   }
 }

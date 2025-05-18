@@ -6,7 +6,7 @@ TRUNCATE live_alert_users, live_alert_alerts, live_alert_contacts RESTART IDENTI
 INSERT INTO live_alert_users (email, nick_name, password, safeword)
 VALUES
   ('test@example.com', 'Luke', '$2a$12$bLw1pKMVWyu1NHvbpN80/eoMeC63X.oGnR1H4hWr6K4CgWSDk5chu', 'saber'),
-  ('han@example', 'Han', '$2a$12$bLw1pKMVWyu1NHvbpN80/eoMeC63X.oGnR1H4hWr6K4CgWSDk5chu', 'chewy'),
+  ('han@example.com', 'Han', '$2a$12$bLw1pKMVWyu1NHvbpN80/eoMeC63X.oGnR1H4hWr6K4CgWSDk5chu', 'chewy'),
   ('leia@example.com', 'Leia', '$2a$12$bLw1pKMVWyu1NHvbpN80/eoMeC63X.oGnR1H4hWr6K4CgWSDk5chu', 'princess')
   ;
 
